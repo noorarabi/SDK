@@ -1,0 +1,43 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - master  # Ãæ main ÍÓÈ ÇÓã ÇáİÑÚ ÇáÃÓÇÓí.
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x  # ÍÏøË Åáì ÅÕÏÇÑ .NET ÇáĞí ÊÓÊÎÏãå.
+
+    - name: Authenticate with GitHub Packages
+      run: |
+        dotnet nuget add source \
+          --username ${{ secrets.NAMESECRET }} \
+          --password ${{ secrets.SECRETTOKEN }} \
+          --store-password-in-clear-text \
+          --name github \
+          https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+
+    - name: Restore Dependencies
+      run: dotnet restore
+
+    - name: Build Project
+      run: dotnet build --configuration Release  # íÖãä ÈäÇÁ ÇáãÔÑæÚ İí æÖÚ ÇáÅÕÏÇÑ.
+
+    - name: Build and Pack
+      run: dotnet pack --configuration Release --output ./bin/Release  # ãÌáÏ ãÎÑÌÇÊ ãÍÏÏ.
+
+    - name: Verify Files
+      run: ls -al ./bin/Release  # ÚÑÖ ŞÇÆãÉ ÇáãáİÇÊ áÊÃßíÏ æÌæÏ ãáİÇÊ .nupkg.
+
+    - name: Publish Package to GitHub Packages
+      run: dotnet nuget push ./bin/Release/*.nupkg --source github
