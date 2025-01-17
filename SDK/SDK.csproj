@@ -8,7 +8,7 @@
 	  
 	  
 	  <RepositoryUrl>https://github.com/${{ github.repository_owner }}/SDK</RepositoryUrl>
-  <PackageLicenseExpression>MIT</PackageLicenseExpression> <!-- أو الرخصة التي تستخدمها -->
+  <PackageLicenseExpression>MIT</PackageLicenseExpression> 
   <Authors>Noor</Authors>
   <Description>Your package description here</Description>
   <PackageVersion>1.0.0</PackageVersion>
